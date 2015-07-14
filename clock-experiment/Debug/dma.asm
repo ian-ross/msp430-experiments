@@ -1,6 +1,6 @@
 ;******************************************************************************
 ;* MSP430 C/C++ Codegen                                           Unix v4.4.3 *
-;* Date/Time created: Tue Jul 14 16:41:05 2015                                *
+;* Date/Time created: Tue Jul 14 19:39:33 2015                                *
 ;******************************************************************************
 	.compiler_opts --abi=eabi --diag_wrap=off --hll_source=on --mem_model:code=large --mem_model:data=large --object_format=elf --silicon_errata=CPU21 --silicon_errata=CPU22 --silicon_errata=CPU23 --silicon_errata=CPU40 --silicon_version=mspx --symdebug:dwarf --symdebug:dwarf_version=3 
 
@@ -8,7 +8,7 @@ $C$DW$CU	.dwtag  DW_TAG_compile_unit
 	.dwattr $C$DW$CU, DW_AT_name("../driverlib/MSP430F5xx_6xx/dma.c")
 	.dwattr $C$DW$CU, DW_AT_producer("TI MSP430 C/C++ Codegen Unix v4.4.3 Copyright (c) 2003-2015 Texas Instruments Incorporated")
 	.dwattr $C$DW$CU, DW_AT_TI_version(0x01)
-	.dwattr $C$DW$CU, DW_AT_comp_dir("/home/iross/workspace_v6_1/clock-experiment/Debug")
+	.dwattr $C$DW$CU, DW_AT_comp_dir("/home/iross/msp430-experiments/clock-experiment/Debug")
 
 $C$DW$1	.dwtag  DW_TAG_subprogram, DW_AT_name("__data16_write_addr")
 	.dwattr $C$DW$1, DW_AT_TI_symbol_name("__data16_write_addr")
@@ -23,7 +23,7 @@ $C$DW$3	.dwtag  DW_TAG_formal_parameter
 	.dwattr $C$DW$3, DW_AT_type(*$C$DW$T$13)
 	.dwendtag $C$DW$1
 
-;	/opt/ti/ccsv6/tools/compiler/ti-cgt-msp430_4.4.3/bin/opt430 /tmp/04321PY0r8X /tmp/04321n8fvyy 
+;	/opt/ti/ccsv6/tools/compiler/ti-cgt-msp430_4.4.3/bin/opt430 /tmp/08943lDc0BR /tmp/08943xCsMOt 
 	.sect	".text:DMA_init"
 	.clink
 	.global	DMA_init

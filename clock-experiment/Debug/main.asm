@@ -1,6 +1,6 @@
 ;******************************************************************************
 ;* MSP430 C/C++ Codegen                                           Unix v4.4.3 *
-;* Date/Time created: Tue Jul 14 18:40:48 2015                                *
+;* Date/Time created: Tue Jul 14 19:39:32 2015                                *
 ;******************************************************************************
 	.compiler_opts --abi=eabi --diag_wrap=off --hll_source=on --mem_model:code=large --mem_model:data=large --object_format=elf --silicon_errata=CPU21 --silicon_errata=CPU22 --silicon_errata=CPU23 --silicon_errata=CPU40 --silicon_version=mspx --symdebug:dwarf --symdebug:dwarf_version=3 
 
@@ -8,7 +8,7 @@ $C$DW$CU	.dwtag  DW_TAG_compile_unit
 	.dwattr $C$DW$CU, DW_AT_name("../main.c")
 	.dwattr $C$DW$CU, DW_AT_producer("TI MSP430 C/C++ Codegen Unix v4.4.3 Copyright (c) 2003-2015 Texas Instruments Incorporated")
 	.dwattr $C$DW$CU, DW_AT_TI_version(0x01)
-	.dwattr $C$DW$CU, DW_AT_comp_dir("/home/iross/workspace_v6_1/clock-experiment/Debug")
+	.dwattr $C$DW$CU, DW_AT_comp_dir("/home/iross/msp430-experiments/clock-experiment/Debug")
 ;	Interrupt vector table mappings
 	.intvec	".int53",	timeout_A0
 	.intvec	".int49",	timeout_A1
@@ -295,7 +295,7 @@ $C$DW$50	.dwtag  DW_TAG_variable, DW_AT_name("$P$T3$4")
 	.dwattr $C$DW$50, DW_AT_decl_file("../main.c")
 	.dwattr $C$DW$50, DW_AT_decl_line(0x74)
 	.dwattr $C$DW$50, DW_AT_decl_column(0x22)
-;	/opt/ti/ccsv6/tools/compiler/ti-cgt-msp430_4.4.3/bin/opt430 /tmp/05380KBMNsp /tmp/053804hCedn 
+;	/opt/ti/ccsv6/tools/compiler/ti-cgt-msp430_4.4.3/bin/opt430 /tmp/0885502RnHY /tmp/08855Ov9a4u 
 	.sect	".text:_isr:timeout_A0"
 	.clink
 	.global	timeout_A0
@@ -570,7 +570,7 @@ $C$DW$71	.dwtag  DW_TAG_TI_branch
 	.dwattr $C$DW$71, DW_AT_TI_call
         CALLA     #UCS_turnOnLFXT1      ; [] |70| 
                                           ; [] |70| 
-	.dwpsn	file "../main.c",line 74,column 2,is_stmt,isa 0
+	.dwpsn	file "../main.c",line 74,column 5,is_stmt,isa 0
         MOV.B     #8,r12                ; [] |74| 
         MOV.W     #0,r13                ; [] |74| 
         MOV.W     #0,r14                ; [] |74| 
@@ -580,7 +580,7 @@ $C$DW$72	.dwtag  DW_TAG_TI_branch
 	.dwattr $C$DW$72, DW_AT_TI_call
         CALLA     #UCS_initClockSignal  ; [] |74| 
                                           ; [] |74| 
-	.dwpsn	file "../main.c",line 75,column 2,is_stmt,isa 0
+	.dwpsn	file "../main.c",line 75,column 5,is_stmt,isa 0
         MOV.B     #1,r12                ; [] |75| 
         MOV.W     #0,r13                ; [] |75| 
         MOV.W     #0,r14                ; [] |75| 

@@ -1,6 +1,6 @@
 ;******************************************************************************
 ;* MSP430 C/C++ Codegen                                           Unix v4.4.3 *
-;* Date/Time created: Tue Jul 14 16:41:09 2015                                *
+;* Date/Time created: Tue Jul 14 19:39:37 2015                                *
 ;******************************************************************************
 	.compiler_opts --abi=eabi --diag_wrap=off --hll_source=on --mem_model:code=large --mem_model:data=large --object_format=elf --silicon_errata=CPU21 --silicon_errata=CPU22 --silicon_errata=CPU23 --silicon_errata=CPU40 --silicon_version=mspx --symdebug:dwarf --symdebug:dwarf_version=3 
 
@@ -8,7 +8,7 @@ $C$DW$CU	.dwtag  DW_TAG_compile_unit
 	.dwattr $C$DW$CU, DW_AT_name("../driverlib/MSP430F5xx_6xx/usci_b_i2c.c")
 	.dwattr $C$DW$CU, DW_AT_producer("TI MSP430 C/C++ Codegen Unix v4.4.3 Copyright (c) 2003-2015 Texas Instruments Incorporated")
 	.dwattr $C$DW$CU, DW_AT_TI_version(0x01)
-	.dwattr $C$DW$CU, DW_AT_comp_dir("/home/iross/workspace_v6_1/clock-experiment/Debug")
+	.dwattr $C$DW$CU, DW_AT_comp_dir("/home/iross/msp430-experiments/clock-experiment/Debug")
 
 $C$DW$1	.dwtag  DW_TAG_subprogram, DW_AT_name("__bis_SR_register")
 	.dwattr $C$DW$1, DW_AT_TI_symbol_name("__bis_SR_register")
@@ -39,7 +39,7 @@ $C$DW$4	.dwtag  DW_TAG_subprogram, DW_AT_name("__disable_interrupt")
 	.dwattr $C$DW$4, DW_AT_decl_file("/opt/ti/ccsv6/tools/compiler/ti-cgt-msp430_4.4.3/include/intrinsics.h")
 	.dwattr $C$DW$4, DW_AT_decl_line(0x51)
 	.dwattr $C$DW$4, DW_AT_decl_column(0x12)
-;	/opt/ti/ccsv6/tools/compiler/ti-cgt-msp430_4.4.3/bin/opt430 /tmp/04618JieHVE /tmp/04618SdIdFC 
+;	/opt/ti/ccsv6/tools/compiler/ti-cgt-msp430_4.4.3/bin/opt430 /tmp/09241ghxQ9F /tmp/092417fPjpG 
 	.sect	".text:USCI_B_I2C_initMaster"
 	.clink
 	.global	USCI_B_I2C_initMaster

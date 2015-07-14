@@ -1,6 +1,8 @@
 # FIXED
 
 bounce-game.obj: ../bounce-game.c
+bounce-game.obj: /opt/ti/ccsv6/tools/compiler/ti-cgt-msp430_4.4.3/include/stdlib.h
+bounce-game.obj: /opt/ti/ccsv6/tools/compiler/ti-cgt-msp430_4.4.3/include/linkage.h
 bounce-game.obj: /home/iross/workspace_v6_1/bounce-game/driverlib/MSP430F5xx_6xx/driverlib.h
 bounce-game.obj: /home/iross/workspace_v6_1/bounce-game/driverlib/MSP430F5xx_6xx/inc/hw_memmap.h
 bounce-game.obj: /opt/ti/ccsv6/ccs_base/msp430/include/msp430.h
@@ -13,7 +15,6 @@ bounce-game.obj: /opt/ti/ccsv6/tools/compiler/ti-cgt-msp430_4.4.3/include/stdint
 bounce-game.obj: /opt/ti/ccsv6/tools/compiler/ti-cgt-msp430_4.4.3/include/stdbool.h
 bounce-game.obj: /opt/ti/ccsv6/tools/compiler/ti-cgt-msp430_4.4.3/include/yvals.h
 bounce-game.obj: /opt/ti/ccsv6/tools/compiler/ti-cgt-msp430_4.4.3/include/stdarg.h
-bounce-game.obj: /opt/ti/ccsv6/tools/compiler/ti-cgt-msp430_4.4.3/include/linkage.h
 bounce-game.obj: /opt/ti/ccsv6/tools/compiler/ti-cgt-msp430_4.4.3/include/_lock.h
 bounce-game.obj: /home/iross/workspace_v6_1/bounce-game/driverlib/MSP430F5xx_6xx/adc10_a.h
 bounce-game.obj: /home/iross/workspace_v6_1/bounce-game/driverlib/MSP430F5xx_6xx/adc12_a.h
@@ -55,6 +56,8 @@ bounce-game.obj: /home/iross/workspace_v6_1/bounce-game/driverlib/MSP430F5xx_6xx
 bounce-game.obj: /home/iross/workspace_v6_1/bounce-game/driverlib/MSP430F5xx_6xx/wdt_a.h
 
 ../bounce-game.c: 
+/opt/ti/ccsv6/tools/compiler/ti-cgt-msp430_4.4.3/include/stdlib.h: 
+/opt/ti/ccsv6/tools/compiler/ti-cgt-msp430_4.4.3/include/linkage.h: 
 /home/iross/workspace_v6_1/bounce-game/driverlib/MSP430F5xx_6xx/driverlib.h: 
 /home/iross/workspace_v6_1/bounce-game/driverlib/MSP430F5xx_6xx/inc/hw_memmap.h: 
 /opt/ti/ccsv6/ccs_base/msp430/include/msp430.h: 
@@ -67,7 +70,6 @@ bounce-game.obj: /home/iross/workspace_v6_1/bounce-game/driverlib/MSP430F5xx_6xx
 /opt/ti/ccsv6/tools/compiler/ti-cgt-msp430_4.4.3/include/stdbool.h: 
 /opt/ti/ccsv6/tools/compiler/ti-cgt-msp430_4.4.3/include/yvals.h: 
 /opt/ti/ccsv6/tools/compiler/ti-cgt-msp430_4.4.3/include/stdarg.h: 
-/opt/ti/ccsv6/tools/compiler/ti-cgt-msp430_4.4.3/include/linkage.h: 
 /opt/ti/ccsv6/tools/compiler/ti-cgt-msp430_4.4.3/include/_lock.h: 
 /home/iross/workspace_v6_1/bounce-game/driverlib/MSP430F5xx_6xx/adc10_a.h: 
 /home/iross/workspace_v6_1/bounce-game/driverlib/MSP430F5xx_6xx/adc12_a.h: 

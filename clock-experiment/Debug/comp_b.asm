@@ -1,6 +1,6 @@
 ;******************************************************************************
 ;* MSP430 C/C++ Codegen                                           Unix v4.4.3 *
-;* Date/Time created: Tue Jul 14 16:41:05 2015                                *
+;* Date/Time created: Tue Jul 14 19:39:33 2015                                *
 ;******************************************************************************
 	.compiler_opts --abi=eabi --diag_wrap=off --hll_source=on --mem_model:code=large --mem_model:data=large --object_format=elf --silicon_errata=CPU21 --silicon_errata=CPU22 --silicon_errata=CPU23 --silicon_errata=CPU40 --silicon_version=mspx --symdebug:dwarf --symdebug:dwarf_version=3 
 
@@ -8,8 +8,8 @@ $C$DW$CU	.dwtag  DW_TAG_compile_unit
 	.dwattr $C$DW$CU, DW_AT_name("../driverlib/MSP430F5xx_6xx/comp_b.c")
 	.dwattr $C$DW$CU, DW_AT_producer("TI MSP430 C/C++ Codegen Unix v4.4.3 Copyright (c) 2003-2015 Texas Instruments Incorporated")
 	.dwattr $C$DW$CU, DW_AT_TI_version(0x01)
-	.dwattr $C$DW$CU, DW_AT_comp_dir("/home/iross/workspace_v6_1/clock-experiment/Debug")
-;	/opt/ti/ccsv6/tools/compiler/ti-cgt-msp430_4.4.3/bin/opt430 /tmp/04288j6jRLw /tmp/04288WaN1M4 
+	.dwattr $C$DW$CU, DW_AT_comp_dir("/home/iross/msp430-experiments/clock-experiment/Debug")
+;	/opt/ti/ccsv6/tools/compiler/ti-cgt-msp430_4.4.3/bin/opt430 /tmp/08910aXfTNw /tmp/08910ulErZ6 
 	.sect	".text:Comp_B_init"
 	.clink
 	.global	Comp_B_init
