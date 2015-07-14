@@ -27,10 +27,10 @@
 #pragma vector=TIMER0_A0_VECTOR
 __interrupt void timeout_A0(void)
 {
-    // New compare value.
+	// New compare value.
     uint16_t compVal = Timer_A_getCaptureCompareCount(TIMER_A0_BASE, TIMER_A_CAPTURECOMPARE_REGISTER_0) + COMPARE_VALUE_0;
 
-    // Toggle LED.
+	// Toggle LED.
     GPIO_toggleOutputOnPin(LED2_PORT, LED2_PIN);
 
     // Add Offset to CCR0 for next cycle.
@@ -40,10 +40,10 @@ __interrupt void timeout_A0(void)
 #pragma vector=TIMER1_A0_VECTOR
 __interrupt void timeout_A1(void)
 {
-    // New compare value.
+	// New compare value.
     uint16_t compVal = Timer_A_getCaptureCompareCount(TIMER_A1_BASE, TIMER_A_CAPTURECOMPARE_REGISTER_0) + COMPARE_VALUE_1;
 
-    // Toggle LED.
+	// Toggle LED.
     GPIO_toggleOutputOnPin(LED1_PORT, LED1_PIN);
 
     // Add Offset to CCR0 for next cycle.
@@ -53,7 +53,7 @@ __interrupt void timeout_A1(void)
 
 int main(void)
 {
-    // Stop watchdog timer.
+	// Stop watchdog timer.
     WDT_A_hold(WDT_A_BASE);
 
     // Set Vcore high enough for 8 MHz MCLK.  For MSP430F5529 with 3.3V
@@ -71,8 +71,8 @@ int main(void)
 
     // Set up clocks: ACLK runs off XT1 crystal, FLL is set up to give
     // 8 MHz MCLK.
-    UCS_initClockSignal(UCS_FLLREF, UCS_XT1CLK_SELECT, UCS_CLOCK_DIVIDER_1);
-    UCS_initClockSignal(UCS_ACLK, UCS_XT1CLK_SELECT, UCS_CLOCK_DIVIDER_1);
+	UCS_initClockSignal(UCS_FLLREF, UCS_XT1CLK_SELECT, UCS_CLOCK_DIVIDER_1);
+	UCS_initClockSignal(UCS_ACLK, UCS_XT1CLK_SELECT, UCS_CLOCK_DIVIDER_1);
     UCS_initFLLSettle(MCLK_MHz, MCLK_FLLREF_RATIO);
 
     // Set SMCLK to run at MCLK / 32 = 250 kHz.
