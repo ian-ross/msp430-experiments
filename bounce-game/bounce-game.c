@@ -2,6 +2,7 @@
 
 #include <stdlib.h>
 #include "driverlib.h"
+#include "BCUart.h"
 
 
 // LED ports and pins.
@@ -38,7 +39,7 @@
 #define BOUNCE_TIME_MS 50
 
 uint8_t samples[SAMPLE_BUFFER_SIZE];  // Circular sample buffer.
-int time_lo, time_hi;                 // 32-bit counter for sample intervals
+unsigned long reaction_time;          // 32-bit counter for sample intervals
                                       // from flash to first button press.
 unsigned int isample;                 // Sampling index.
 int switched_sample;                  // Marks sample of first button press.
@@ -82,8 +83,7 @@ __interrupt void timeout_A1(void)
         switched_sample = isample;
         finish_countdown = BOUNCE_TIME_MS * SAMPLES_PER_MS;
       }
-      ++time_lo;
-      if (time_lo == 0) ++time_hi;
+      ++reaction_time;
     }
     isample = (isample + 1) & SAMPLE_SIZE_MASK;
     if (finish_countdown > 0) {
@@ -104,6 +104,41 @@ unsigned int random_delay_ms(unsigned int min, unsigned int max)
 {
     return min + rand() % (max - min + 1);
 }
+
+#define STR_BUFF_LEN 64
+
+void send_reaction_time(void)
+{
+    unsigned long reaction_ms, reaction_us;
+    uint8_t buff[STR_BUFF_LEN];
+    uint8_t *pt = buff + STR_BUFF_LEN - 1;
+    int i;
+
+    // Convert reaction time sample count to us.
+    reaction_time *= SAMPLE_US;
+
+    // Extract ms and us parts.
+    reaction_ms = reaction_time / 1000;
+    reaction_us = reaction_time % 1000;
+
+    // Format string.
+    *pt-- = '\n'; *pt-- = '\r';  *pt-- = 's'; *pt-- = 'm';  *pt-- = ' ';
+    for (i = 0; i < 3; ++i) {
+        *pt-- = '0' + reaction_us % 10;
+        reaction_us /= 10;
+    }
+    *pt-- = '.';
+    if (reaction_ms == 0)
+        *pt-- = '0';
+    else {
+        while (reaction_ms > 0) {
+            *pt-- = '0' + reaction_ms % 10;
+            reaction_ms /= 10;
+        }
+    }
+    bcUartSend(pt + 1, STR_BUFF_LEN - (pt - buff) - 1);
+}
+
 
 
 // HARDWARE SETUP
@@ -205,6 +240,7 @@ void setup(void)
     switch (state) {
     case IDLE:
         // Enable interrupt on switch 1.
+        bcUartSend("IDLE...\r\n", 9);
         GPIO_enableInterrupt(SWITCH1_PORT, SWITCH1_PIN);
         break;
 
@@ -219,7 +255,7 @@ void setup(void)
     case WAITING:
         // Clear input buffer and reinitialise all counters.
         for (i = 0; i < SAMPLE_BUFFER_SIZE; ++i) samples[i] = 0;
-        time_lo = time_hi = 0;
+        reaction_time = 0;
         isample = 0;
         switched_sample = -1;
         finish_countdown = -1;
@@ -258,6 +294,7 @@ void process_event(void)
         stop_sampling_timer();
         GPIO_setOutputLowOnPin(LED1_PORT, LED1_PIN);
         GPIO_setOutputLowOnPin(LED2_PORT, LED2_PIN);
+        send_reaction_time();
         state = IDLE;
         break;
     }
@@ -279,6 +316,9 @@ int main(void) {
 
     // Initialise GPIOs for LEDs and switches.
     init_gpios();
+
+    // Initialise EXP-MSP430F5529LP USB backchannel UART.
+    bcUartInit();
 
     // State machine -- transitions driven by interrupts.  setup() performs
     // state-specific hardware setup and process_event() takes over when
