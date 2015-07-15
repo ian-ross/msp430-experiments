@@ -34,9 +34,9 @@
 #define SAMPLE_US 50
 #define MCLK_PER_SAMPLE 400
 #define SAMPLE_BUFFER_SIZE 2048
-#define SAMPLE_SIZE_MASK 0x03FF
+#define SAMPLE_SIZE_MASK 0x07FF
 #define SAMPLES_PER_MS 20
-#define BOUNCE_TIME_MS 50
+#define BOUNCE_TIME_MS 80
 
 uint8_t samples[SAMPLE_BUFFER_SIZE];  // Circular sample buffer.
 unsigned long reaction_time;          // 32-bit counter for sample intervals
@@ -72,14 +72,14 @@ __interrupt void timeout_A1(void)
     uint16_t compVal = Timer_A_getCaptureCompareCount(TIMER_A1_BASE, TIMER_A_CAPTURECOMPARE_REGISTER_0) + MCLK_PER_SAMPLE;
     Timer_A_setCompareValue(TIMER_A1_BASE, TIMER_A_CAPTURECOMPARE_REGISTER_0, compVal);
 
-    int switch_state = GPIO_getInputPinValue(SWITCH2_PORT, SWITCH2_PIN);
+    int switch_state = GPIO_getInputPinValue(SWITCH2_PORT, SWITCH2_PIN) ? 0 : 1;
     samples[isample] = switch_state;
-    if (!switch_state)
+    if (switch_state)
         GPIO_setOutputHighOnPin(LED2_PORT, LED2_PIN);
     else
         GPIO_setOutputLowOnPin(LED2_PORT, LED2_PIN);
     if (switched_sample < 0) {
-      if (!switch_state) {
+      if (switch_state) {
         switched_sample = isample;
         finish_countdown = BOUNCE_TIME_MS * SAMPLES_PER_MS;
       }
@@ -139,6 +139,29 @@ void send_reaction_time(void)
     bcUartSend(pt + 1, STR_BUFF_LEN - (pt - buff) - 1);
 }
 
+
+void send_samples(void)
+{
+    uint8_t buff[64 + 2];
+    int ifrom, ito, ntot;
+    ifrom = isample;
+    ito = 0;
+    for (ntot = 0; ntot < SAMPLE_BUFFER_SIZE; ++ntot) {
+        buff[ito++] = samples[ifrom] ? '1' : '0';
+        ifrom = (ifrom + 1) & SAMPLE_SIZE_MASK;
+        if (ito == 64) {
+            buff[ito++] = '\r';
+            buff[ito++] = '\n';
+            bcUartSend(buff, 64 + 2);
+            ito = 0;
+        }
+    }
+    if (ito != 0) {
+        buff[ito++] = '\r';
+        buff[ito++] = '\n';
+        bcUartSend(buff, ito);
+    }
+}
 
 
 // HARDWARE SETUP
@@ -295,6 +318,7 @@ void process_event(void)
         GPIO_setOutputLowOnPin(LED1_PORT, LED1_PIN);
         GPIO_setOutputLowOnPin(LED2_PORT, LED2_PIN);
         send_reaction_time();
+        send_samples();
         state = IDLE;
         break;
     }
