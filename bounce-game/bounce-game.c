@@ -26,8 +26,29 @@
 #define MCLK_FLLREF_RATIO 244
 
 
+// Bounce sampling information: one sample every 50 us (400 SMCLK periods
+// at 8 MHz); 2048 samples => 102.4 ms total sample time; 50 ms (1000
+// samples) of bounce sampling after initial button press transition.
+
+#define SAMPLE_US 50
+#define MCLK_PER_SAMPLE 400
+#define SAMPLE_BUFFER_SIZE 2048
+#define SAMPLE_SIZE_MASK 0x03FF
+#define SAMPLES_PER_MS 20
+#define BOUNCE_TIME_MS 50
+
+uint8_t samples[SAMPLE_BUFFER_SIZE];  // Circular sample buffer.
+int time_lo, time_hi;                 // 32-bit counter for sample intervals
+                                      // from flash to first button press.
+unsigned int isample;                 // Sampling index.
+int switched_sample;                  // Marks sample of first button press.
+int finish_countdown;                 // Counter to continue sampling after
+                                      // first button press to capture bounce.
+
+
 // ISRs
 
+// Switch 1 button press.
 #pragma vector=PORT2_VECTOR
 __interrupt void switch1(void)
 {
@@ -35,26 +56,51 @@ __interrupt void switch1(void)
     LPM0_EXIT;
 }
 
+// Initial random one-shot timer.
 #pragma vector=TIMER0_A0_VECTOR
 __interrupt void timeout_A0(void)
 {
     LPM0_EXIT;
 }
 
+// Main sampling timer.
+#pragma vector=TIMER1_A0_VECTOR
+__interrupt void timeout_A1(void)
+{
+    // Reset timer for next sample compare value.
+    uint16_t compVal = Timer_A_getCaptureCompareCount(TIMER_A1_BASE, TIMER_A_CAPTURECOMPARE_REGISTER_0) + MCLK_PER_SAMPLE;
+    Timer_A_setCompareValue(TIMER_A1_BASE, TIMER_A_CAPTURECOMPARE_REGISTER_0, compVal);
+
+    int switch_state = GPIO_getInputPinValue(SWITCH2_PORT, SWITCH2_PIN);
+    samples[isample] = switch_state;
+    if (!switch_state)
+        GPIO_setOutputHighOnPin(LED2_PORT, LED2_PIN);
+    else
+        GPIO_setOutputLowOnPin(LED2_PORT, LED2_PIN);
+    if (switched_sample < 0) {
+      if (!switch_state) {
+        switched_sample = isample;
+        finish_countdown = BOUNCE_TIME_MS * SAMPLES_PER_MS;
+      }
+      ++time_lo;
+      if (time_lo == 0) ++time_hi;
+    }
+    isample = (isample + 1) & SAMPLE_SIZE_MASK;
+    if (finish_countdown > 0) {
+      --finish_countdown;
+      if (finish_countdown == 0) LPM0_EXIT;
+    }
+}
+
+
 
 // States.
-
-enum {
-    IDLE,
-    ARMED,
-    WAITING,
-    CAPTURED
-} state;
+enum { IDLE, ARMED, WAITING } state;
 
 
 // UTILITIES
 
-int random_delay_ms(int min, int max)
+unsigned int random_delay_ms(unsigned int min, unsigned int max)
 {
     return min + rand() % (max - min + 1);
 }
@@ -76,8 +122,8 @@ void init_clocks(void)
     UCS_initClockSignal(UCS_ACLK, UCS_XT1CLK_SELECT, UCS_CLOCK_DIVIDER_1);
     UCS_initFLLSettle(MCLK_MHz, MCLK_FLLREF_RATIO);
 
-    // Set SMCLK to run at MCLK / 32 = 250 kHz.
-    UCSCTL5 = (UCSCTL5 & ~DIVS_7) | DIVS__32;
+    // Set SMCLK to run at MCLK = 8 MHz.
+    UCSCTL5 = (UCSCTL5 & ~DIVS_7) | DIVS__1;
 }
 
 
@@ -119,33 +165,42 @@ void start_one_shot_timer(int period_ms)
 }
 
 
-//    // Timer A1 used for sampling: 50 us intervals.
-//
-//    // Timer A1 in continuous mode sourced by SMCLK.
-//    Timer_A_initContinuousModeParam pt1 = {0};
-//    pt1.clockSource = TIMER_A_CLOCKSOURCE_SMCLK;
-//    pt1.clockSourceDivider = TIMER_A_CLOCKSOURCE_DIVIDER_8;
-//    pt1.timerInterruptEnable_TAIE = TIMER_A_TAIE_INTERRUPT_DISABLE;
-//    pt1.timerClear = TIMER_A_DO_CLEAR;
-//    pt1.startTimer = false;
-//    Timer_A_initContinuousMode(TIMER_A1_BASE, &pt1);
-//
-//    // Initialise compare mode.
-//    Timer_A_clearCaptureCompareInterrupt(TIMER_A1_BASE, TIMER_A_CAPTURECOMPARE_REGISTER_0);
-//    Timer_A_initCompareModeParam pc1 = {0};
-//    pc1.compareRegister = TIMER_A_CAPTURECOMPARE_REGISTER_0;
-//    pc1.compareInterruptEnable = TIMER_A_CAPTURECOMPARE_INTERRUPT_ENABLE;
-//    pc1.compareOutputMode = TIMER_A_OUTPUTMODE_OUTBITVALUE;
-//    pc1.compareValue = COMPARE_VALUE_1;
-//    Timer_A_initCompareMode(TIMER_A1_BASE, &pc1);
+void start_sampling_timer(void)
+{
+    // Timer A1 used for sampling: 50 us intervals, continuous mode
+    // sourced by MCLK.
+    Timer_A_initContinuousModeParam pt1 = {0};
+    pt1.clockSource = TIMER_A_CLOCKSOURCE_SMCLK;
+    pt1.clockSourceDivider = TIMER_A_CLOCKSOURCE_DIVIDER_1;
+    pt1.timerInterruptEnable_TAIE = TIMER_A_TAIE_INTERRUPT_DISABLE;
+    pt1.timerClear = TIMER_A_DO_CLEAR;
+    pt1.startTimer = false;
+    Timer_A_initContinuousMode(TIMER_A1_BASE, &pt1);
 
+    // Initialise compare mode.
+    Timer_A_clearCaptureCompareInterrupt(TIMER_A1_BASE, TIMER_A_CAPTURECOMPARE_REGISTER_0);
+    Timer_A_initCompareModeParam pc1 = {0};
+    pc1.compareRegister = TIMER_A_CAPTURECOMPARE_REGISTER_0;
+    pc1.compareInterruptEnable = TIMER_A_CAPTURECOMPARE_INTERRUPT_ENABLE;
+    pc1.compareOutputMode = TIMER_A_OUTPUTMODE_OUTBITVALUE;
+    pc1.compareValue = MCLK_PER_SAMPLE;
+    Timer_A_initCompareMode(TIMER_A1_BASE, &pc1);
+
+    Timer_A_startCounter(TIMER_A1_BASE, TIMER_A_CONTINUOUS_MODE);
+}
+
+
+void stop_sampling_timer(void)
+{
+    Timer_A_stop(TIMER_A1_BASE);
+}
 
 
 
 
 void setup(void)
 {
-    int period_ms;
+    unsigned int i, period_ms;
 
     switch (state) {
     case IDLE:
@@ -162,7 +217,15 @@ void setup(void)
         break;
 
     case WAITING:
-    case CAPTURED:
+        // Clear input buffer and reinitialise all counters.
+        for (i = 0; i < SAMPLE_BUFFER_SIZE; ++i) samples[i] = 0;
+        time_lo = time_hi = 0;
+        isample = 0;
+        switched_sample = -1;
+        finish_countdown = -1;
+
+        // Start sampling counter.
+        start_sampling_timer();
         break;
     }
 }
@@ -179,23 +242,25 @@ void process_event(void)
             for (j = 0; j < 10; ++j) __delay_cycles(50000);
         }
         GPIO_clearInterrupt(SWITCH1_PORT, SWITCH1_PIN);
+        GPIO_disableInterrupt(SWITCH1_PORT, SWITCH1_PIN);
         state = ARMED;
         break;
 
     case ARMED:
-        // Timer expired: flash LED and start collecting.
+        // Timer expired: light LED and start collecting.
         Timer_A_stop(TIMER_A0_BASE);
-        GPIO_toggleOutputOnPin(LED2_PORT, LED2_PIN);
-
-        state = IDLE;
+        GPIO_setOutputHighOnPin(LED1_PORT, LED1_PIN);
+        state = WAITING;
         break;
 
     case WAITING:
-    case CAPTURED:
+        // Finished collecting.
+        stop_sampling_timer();
+        GPIO_setOutputLowOnPin(LED1_PORT, LED1_PIN);
+        GPIO_setOutputLowOnPin(LED2_PORT, LED2_PIN);
+        state = IDLE;
         break;
     }
-
-
 }
 
 
@@ -215,14 +280,13 @@ int main(void) {
     // Initialise GPIOs for LEDs and switches.
     init_gpios();
 
-    // Timer A setup.
-    // Up mode.
-//  TA0CTL = MC_1 | ...;
-
+    // State machine -- transitions driven by interrupts.  setup() performs
+    // state-specific hardware setup and process_event() takes over when
+    // the event causing a state transition occurs.
+    state = IDLE;
     __enable_interrupt();
     for(;;) {
         setup();
-        // Go to LPM0 to wait for an interrupt.
         __bis_SR_register(LPM0_bits + GIE);
         process_event();
     }
