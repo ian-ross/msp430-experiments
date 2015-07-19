@@ -45,8 +45,8 @@ It is running on the following chips out of the box:
 
 It fits into 11 kb of Flash and runs with at least 512 Bytes of Ram.
 
-You can choose to compile to flash or to ram, and it generates native code 
-with folding, inlining of short words and it opcodes common instructions. 
+You can choose to compile to flash or to ram, and it generates native code
+with folding, inlining of short words and it opcodes common instructions.
 Note that it doesn't need to save any pointers, so info flash keeps untouched.
 
 Hopefully it should be completely interrupt-save and you can hook your Forth
@@ -107,7 +107,7 @@ mecrisp-memmap             Runs Forth, feeds in ramdefinitions.txt and
 ;------------------------------------------------------------------------------
 
 I highly recommend Launchpad users new to Mecrisp
-to load basisdefinitions-launchpad.txt for a first try. 
+to load basisdefinitions-launchpad.txt for a first try.
 This one contains the definitions for a cosy launch:
 
 -Port definitions
@@ -118,8 +118,8 @@ This one contains the definitions for a cosy launch:
 -Simple busy wait routines
 -Cornerstone to delete parts of flash and an hexdump tool
 
-Put the output of hexdump at the beginning of the vanilla 
-forth-mecrisp-2553.hex file to generate a new hex file that includes your 
+Put the output of hexdump at the beginning of the vanilla
+forth-mecrisp-2553.hex file to generate a new hex file that includes your
 dictionary contents and can be used to clone finished forth projects !
 
 Try:
@@ -135,21 +135,21 @@ Try:
 10 pwm
 200 pwm
 500 pwm
-1000 pwm 
+1000 pwm
 
 For terminal communication in Linux, picocom is just nice.
 http://code.google.com/p/picocom/
 
 Invocation:
-picocom -b 9600 /dev/ttyACM0 --imap lfcrlf,crcrlf --omap delbs,crlf 
+picocom -b 9600 /dev/ttyACM0 --imap lfcrlf,crcrlf --omap delbs,crlf
         --send-cmd "ascii-xfr -s -l 250 -n"
 
-Type Ctrl-A and Ctrl-X to exit Picocom, 
+Type Ctrl-A and Ctrl-X to exit Picocom,
      Ctrl-A and Ctrl-S to load Forth source files.
 
 Don't forget to set the RXD/TXD UART jumpers to "HW UART" position.
 
-As a small bonus, there is a Ledcomm in Forth implementation in 
+As a small bonus, there is a Ledcomm in Forth implementation in
 ledcomm-launchpad.txt that runs on your Launchpad with
 a red high brightness LED in clear plastic housing.
 For algorithm description, see ledcomm.txt.
@@ -158,7 +158,7 @@ For algorithm description, see ledcomm.txt.
 ; Special Mecrisp for MSP430F1612 with initialisations for Launchpad hardware
 ;------------------------------------------------------------------------------
 
-If you have a 4 wire JTAG adapter 
+If you have a 4 wire JTAG adapter
 and a spare (or bricked) launchpad, this is your item !
 
 Don't forget to read and save a copy of the original launchpad 1612 firmware
@@ -170,15 +170,15 @@ TP2: Reset
 TP4: TCK
 TP5: TMS
 TP6: TDI
-TP7: TDO 
+TP7: TDO
 
 Mecrisp for F1612 has special hardware initialisations to activate the TUSB3410
-without the USB-Firmware in I2C-EEprom. This way, the TUSB3410 boots over USB 
-and gets a standard firmware image from PC which configures it as a simple 
-serial bridge. Set the serial interface to 9600 baud, 8N1 - and feel free to 
+without the USB-Firmware in I2C-EEprom. This way, the TUSB3410 boots over USB
+and gets a standard firmware image from PC which configures it as a simple
+serial bridge. Set the serial interface to 9600 baud, 8N1 - and feel free to
 write your own open firmware for the Launchpad.
 
-Unfortunately, only a few pins are accessible... 
+Unfortunately, only a few pins are accessible...
 
 P5.3 is on TEST jumper
 P5.1, P5.2, P4.6, P2.4 seem to be all together on RESET jumper
@@ -196,7 +196,7 @@ As there are no accessible analog pins, no analog support is included.
 Terminal is almost the same - just change the above to /dev/ttyUSB0.
 Copy ti_3410.fw to /lib/firmware if needed.
 
-Good luck ! 
+Good luck !
 
 ;------------------------------------------------------------------------------
 Inner workings and design ideas behind Mecrisp
@@ -630,12 +630,12 @@ View it with fixed-width font !
         hook-emit?      ( -- a-addr ) Hooks for redirecting
         hook-key?       ( -- a-addr )   terminal IO
         hook-key        ( -- a-addr )     on the fly
-        hook-emit       ( -- a-addr ) 
+        hook-emit       ( -- a-addr )
 
         serial-emit?    ( -- Flag )  Serial interface
         serial-key?     ( -- Flag )    terminal routines
         serial-key      ( -- Char )      as default communications
-        serial-emit     ( Char -- ) 
+        serial-emit     ( Char -- )
 
         hook-pause      ( -- a-addr ) Hook for a multitasker
         pause           ( -- )        Task switch, none for default
@@ -1011,7 +1011,7 @@ Deep insights:
 
         flashvar-here   ( -- a-addr ) Gives current RAM management pointer
         dictionarystart ( -- a-addr ) Current entry point for dictionary search
-        dictionarynext  ( a-addr -- a-addr flag ) 
+        dictionarynext  ( a-addr -- a-addr flag )
                         Scans dictionary chain and returns true if end is reached.
 
 ;------------------------------------------------------------------------------
@@ -1169,8 +1169,8 @@ limit index   do ... [one or more leave(s)] ... loop
                           SMCLK, ACLK are active
 
         lpm1            ( -- ) Enter LPM1 and enable IRQs:
-                          CPU, MCLK are disabled. 
-                          DCO and DC generator are disabled if 
+                          CPU, MCLK are disabled.
+                          DCO and DC generator are disabled if
                           the DCO is not used for SMCLK.
                           ACLK is active.
 
@@ -1331,7 +1331,7 @@ limit index   do ... [one or more leave(s)] ... loop
         More IRQs available, will be added on desire !
 
 High memory access with double address:
-       
+
         x@              ( ud -- u|n ) Fetches from high memory
         x!              ( u|n ud -- ) Stores to high memory
 

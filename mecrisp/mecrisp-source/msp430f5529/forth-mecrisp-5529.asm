@@ -35,7 +35,7 @@ RamAnfang   equ 2400h ; Start of RAM
 RamEnde     equ 4400h ; End of RAM, 8 kb
 FlashAnfang equ 4400h ; Start of Flash, 47 kb, Flash end always is $FFFF.
 
-  org 0D400h          ; Start of Forth kernel. Needs to be on a 512 byte boundary !
+  org 0D300h          ; Start of Forth kernel. Needs to be on a 512 byte boundary !
 
 ;------------------------------------------------------------------------------
 ; Prepare Dictionary
@@ -145,28 +145,28 @@ Reset: ; Main entry point. Chip specific initialisations go here.
 
   .word   irq_vektor_rtc       ; 0FFD2  RTC
   .word   irq_vektor_port2     ; 0FFD4  Port 2
-  .word   null_handler         ; 0FFD6  TA2CCR1
-  .word   null_handler         ; 0FFD8  TA2CCR0
-  .word   null_handler         ; 0FFDA  USCI-B1
-  .word   null_handler         ; 0FFDC  USCI-A1
+  .word   irq_vektor_ta2ccr1   ; 0FFD6  TA2CCR1
+  .word   irq_vektor_ta2ccr0   ; 0FFD8  TA2CCR0
+  .word   irq_vektor_usci_b1   ; 0FFDA  USCI-B1
+  .word   irq_vektor_usci_a1   ; 0FFDC  USCI-A1
   .word   irq_vektor_port1     ; 0FFDE  Port 1
 
-  .word   null_handler         ; 0FFE0  TA1CCR1
-  .word   null_handler         ; 0FFE2  TA1CCR0
-  .word   null_handler         ; 0FFE4  DMS
-  .word   null_handler         ; 0FFE6  USB
-  .word   null_handler         ; 0FFE8  TA0CCR1
-  .word   null_handler         ; 0FFEA  TA0CCR0
+  .word   irq_vektor_ta1ccr1   ; 0FFE0  TA1CCR1
+  .word   irq_vektor_ta1ccr0   ; 0FFE2  TA1CCR0
+  .word   irq_vektor_dma       ; 0FFE4  DMA
+  .word   irq_vektor_usb       ; 0FFE6  USB
+  .word   irq_vektor_ta0ccr1   ; 0FFE8  TA0CCR1
+  .word   irq_vektor_ta0ccr0   ; 0FFEA  TA0CCR0
   .word   irq_vektor_adc       ; 0FFEC  ADC
-  .word   null_handler         ; 0FFEE  USCI-B0
+  .word   irq_vektor_usci_a0   ; 0FFEE  USCI-B0
 
-  .word   null_handler         ; 0FFF0  USCI-A0
+  .word   irq_vektor_usci_a0   ; 0FFF0  USCI-A0
   .word   irq_vektor_watchdog  ; 0FFF2  Watchdog
-  .word   null_handler         ; 0FFF4  TB0CCR1
-  .word   null_handler         ; 0FFF6  TB0CCR0
+  .word   irq_vektor_tb0ccr1   ; 0FFF4  TB0CCR1
+  .word   irq_vektor_tb0ccr0   ; 0FFF6  TB0CCR0
   .word   irq_vektor_comp      ; 0FFF8  Comparator
-  .word   null_handler         ; 0FFFA  User NMI. Unused.
-  .word   null_handler         ; 0FFFC  System NMI. Unused.
+  .word   irq_vektor_unmi      ; 0FFFA  User NMI. Unused.
+  .word   irq_vektor_snmi      ; 0FFFC  System NMI. Unused.
   .word   Reset                ; 0FFFE  Main entry point
 
 end
