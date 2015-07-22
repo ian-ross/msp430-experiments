@@ -35,7 +35,7 @@ RamAnfang   equ 2400h ; Start of RAM
 RamEnde     equ 4400h ; End of RAM, 8 kb
 FlashAnfang equ 4400h ; Start of Flash, 47 kb, Flash end always is $FFFF.
 
-  org 0D300h          ; Start of Forth kernel. Needs to be on a 512 byte boundary !
+  org 0D200h          ; Start of Forth kernel. Needs to be on a 512 byte boundary !
 
 ;------------------------------------------------------------------------------
 ; Prepare Dictionary
